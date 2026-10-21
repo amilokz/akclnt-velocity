@@ -34,7 +34,14 @@ export class Engine {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(fov, 1, near, far);
-    this.clock = new THREE.Clock();
+    // THREE.Clock is deprecated in current three.js — tiny internal clock instead.
+    this.clock = {
+      _last: performance.now(), _elapsed: 0,
+      getDelta() { const now = performance.now(); const d = (now - this._last) / 1000; this._last = now; this._elapsed += d; return d; },
+      getElapsedTime() { return this._elapsed; },
+      start() { this._last = performance.now(); },
+      stop() {},
+    };
     this.time = 0;
     this.ticks = [];
     this.afters = [];

@@ -17,7 +17,7 @@ const IS_SMALL = matchMedia('(pointer: coarse)').matches || innerWidth < 900;
 const DPR = IS_SMALL ? 1 : 1.25;
 
 const engine = new Engine({
-  canvas, fov: 30, near: 0.05, far: 120, dpr: DPR, background: 0x070a12,
+  canvas, fov: 30, near: 0.05, far: 120, dpr: DPR, background: 0xf2f3f5,
   post: {
     tone: 'neutral',
     ao: { aoRadius: 0.16, intensity: 2.0, distanceFalloff: 1.1, aoSamples: 8 },
@@ -26,7 +26,7 @@ const engine = new Engine({
   },
 });
 const { scene, camera, renderer } = engine;
-renderer.setClearColor(0x070a12, 1);
+renderer.setClearColor(0xf2f3f5, 1);
 makeStudio(renderer, scene, { front: 2.0, dome: 1.3 });
 camera.position.set(0, 0.35, 9);
 
@@ -36,7 +36,7 @@ const backdrop = new THREE.Mesh(
   new THREE.ShaderMaterial({
     depthWrite: false, depthTest: false,
     uniforms: {
-      uC: { value: new THREE.Color(0x0a0e1a) },
+      uC: { value: new THREE.Color(0xd9dee6) },
       uRes: { value: new THREE.Vector2(1, 1) },
       uFocus: { value: new THREE.Vector2(0.62, 0.5) },
     },
@@ -45,7 +45,7 @@ const backdrop = new THREE.Mesh(
       void main(){ vec2 uv = gl_FragCoord.xy / uRes; vec2 d = (uv - uFocus) * vec2(uRes.x / uRes.y, 1.0);
         float r = length(d);
         vec3 c = uC * mix(1.8, 0.6, smoothstep(0.0, 1.3, r));
-        c += vec3(0.030, 0.012, 0.002) * (1.0 - smoothstep(0.0, 1.1, r));
+        c += vec3(0.045, 0.018, 0.0) * (1.0 - smoothstep(0.0, 1.1, r));
         gl_FragColor = vec4(c, 1.0); }`,
   })
 );
@@ -54,25 +54,19 @@ backdrop.renderOrder = -10;
 scene.add(backdrop);
 engine.onResize((w, h, dpr) => backdrop.material.uniforms.uRes.value.set(w * dpr, h * dpr));
 
-const shadow = new ContactShadow(renderer, scene, { width: 8.5, depth: 5, y: -1.1, res: IS_SMALL ? 256 : 384, far: 3.4, blur: 3.2, opacity: 0.5 });
+const shadow = new ContactShadow(renderer, scene, { width: 8.5, depth: 5, y: -1.1, res: IS_SMALL ? 256 : 384, far: 3.4, blur: 3.2, opacity: 0.32 });
 shadow.hidden.push(backdrop);
 
 /* ─── Loader ─── */
 const assets = new Assets();
 const loaderEl = document.querySelector('.loader');
-{
-  const g = loaderEl.querySelector('.lg-ticks');
-  for (let i = 0; i <= 72; i += 6) {
-    const a = (i / 72) * Math.PI * 2 - Math.PI / 2, r0 = i % 24 ? 90 : 89, r1 = i % 24 ? 94 : 98;
-    g.insertAdjacentHTML('beforeend', `<line x1="${100 + Math.cos(a) * r0}" y1="${100 + Math.sin(a) * r0}" x2="${100 + Math.cos(a) * r1}" y2="${100 + Math.sin(a) * r1}"/>`);
-  }
-}
+
 const loader = preloader({
   assets, el: loaderEl, minTime: 650,
   onValue: (v) => { loaderEl.style.setProperty('--p', v); loaderEl.querySelector('.loader-n').textContent = Math.round(v * 100); },
   exit: () => gsap.timeline()
-    .to('.loader-gauge', { scale: 1.08, duration: 0.5, ease: 'power2.out' })
-    .to(loaderEl, { clipPath: 'inset(0 0 100% 0)', duration: 1.1, ease: 'expo.inOut' }, 0.25),
+    .to('.loader-inner', { y: -14, opacity: 0, duration: 0.45, ease: 'power2.out' })
+    .to(loaderEl, { clipPath: 'inset(0 0 100% 0)', duration: 1.1, ease: 'expo.inOut' }, 0.2),
 });
 
 const pointer = new Pointer({ lambda: 5 });

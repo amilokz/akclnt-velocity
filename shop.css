@@ -5,9 +5,9 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --cream: #070A12;
-  --dark: #040914;
-  --navy: #F3EDD8;
+  --cream: #F2F3F5;
+  --dark: #FFFFFF;
+  --navy: #14161C;
   --bronze: #FF6A1A;
   --bronze-light: #FFB37A;
   --line: rgba(255, 122, 26, 0.18);
@@ -34,8 +34,8 @@ em { font-style: italic; color: var(--bronze); font-family: 'Space Grotesk', san
   justify-content: space-between;
   padding: 20px 48px;
   background: var(--dark);
-  color: #F3EDD8;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: #14161C;
+  border-bottom: 1px solid rgba(18,21,28,0.10);
 }
 
 .nav-static .brand {
@@ -92,8 +92,8 @@ em { font-style: italic; color: var(--bronze); font-family: 'Space Grotesk', san
 }
 
 .nav-static .btn-line {
-  border: 1px solid rgba(255,255,255,0.4);
-  color: #F3EDD8;
+  border: 1px solid rgba(18,21,28,0.35);
+  color: #14161C;
   padding: 10px 22px;
   border-radius: 30px;
   font-size: 0.68rem;
@@ -113,7 +113,7 @@ em { font-style: italic; color: var(--bronze); font-family: 'Space Grotesk', san
 /* ─── HERO ─── */
 .shop-hero {
   background: var(--dark);
-  color: #F3EDD8;
+  color: #14161C;
   text-align: center;
   padding: 90px 24px 110px;
 }
@@ -330,7 +330,7 @@ em { font-style: italic; color: var(--bronze); font-family: 'Space Grotesk', san
 /* ─── FOOTER (reuse from main site, simplified fallback) ─── */
 .foot {
   background: var(--dark);
-  color: #F3EDD8;
+  color: #14161C;
   padding: 80px 48px 40px;
 }
 
