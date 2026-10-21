@@ -253,7 +253,8 @@ engine.onTick((dt, t) => {
     0
   );
   rig.rotation.set(cur.rx + pointer.sy * 0.07, cur.ry + pointer.sx * 0.16, cur.rz);
-  rig.scale.setScalar(cur.s);
+  const reveal = IS_SMALL ? 1 : ss(scrollY, innerHeight * 0.04, innerHeight * 0.5);
+  rig.scale.setScalar(Math.max(0.0001, cur.s * reveal));
   camera.position.set(0, 0.35, cur.camZ + (IS_SMALL ? 1.7 : 0));
   camera.lookAt(0, -0.05, 0);
 
