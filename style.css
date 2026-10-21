@@ -3,7 +3,7 @@
   /* ===== AKCLNT VELOCITY THEME — clinical lab white + volt orange ===== */
 
   /* Background Colors */
-  --ivory: #F2F3F5;
+  --ivory: #FFFFFF;
   --paper: #FFFFFF;
 
   /* Main Text Colors */
@@ -42,7 +42,7 @@ main { position: relative; z-index: 2; pointer-events: none; }
 main a, main button, .nav, .reserve, .foot { pointer-events: auto; }
 
 /* ─── Loader ─────────────────────────────────────────────── */
-.loader { position: fixed; inset: 0; z-index: 100; background: #F2F3F5; display: grid; place-items: center; color: var(--ink); }
+.loader { position: fixed; inset: 0; z-index: 100; background: #FFFFFF; display: grid; place-items: center; color: var(--ink); }
 .loader-inner { display: grid; justify-items: center; gap: 14px; padding: 24px; text-align: center; }
 .loader-shoe { width: 92px; color: var(--rose-deep); animation: loaderBob 1.15s ease-in-out infinite; }
 @keyframes loaderBob { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-9px) rotate(3deg); } }

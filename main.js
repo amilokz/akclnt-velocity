@@ -17,7 +17,7 @@ const IS_SMALL = matchMedia('(pointer: coarse)').matches || innerWidth < 900;
 const DPR = IS_SMALL ? 1 : 1.25;
 
 const engine = new Engine({
-  canvas, fov: 30, near: 0.05, far: 120, dpr: DPR, background: 0xf2f3f5,
+  canvas, fov: 30, near: 0.05, far: 120, dpr: DPR, background: 0xffffff,
   post: {
     tone: 'neutral',
     ao: { aoRadius: 0.16, intensity: 2.0, distanceFalloff: 1.1, aoSamples: 8 },
@@ -26,7 +26,7 @@ const engine = new Engine({
   },
 });
 const { scene, camera, renderer } = engine;
-renderer.setClearColor(0xf2f3f5, 1);
+renderer.setClearColor(0xffffff, 1);
 makeStudio(renderer, scene, { front: 2.0, dome: 1.3 });
 camera.position.set(0, 0.35, 9);
 
@@ -36,7 +36,7 @@ const backdrop = new THREE.Mesh(
   new THREE.ShaderMaterial({
     depthWrite: false, depthTest: false,
     uniforms: {
-      uC: { value: new THREE.Color(0xd9dee6) },
+      uC: { value: new THREE.Color(0xffffff) },
       uRes: { value: new THREE.Vector2(1, 1) },
       uFocus: { value: new THREE.Vector2(0.62, 0.5) },
     },
@@ -44,7 +44,7 @@ const backdrop = new THREE.Mesh(
     fragmentShader: `uniform vec3 uC; uniform vec2 uRes, uFocus;
       void main(){ vec2 uv = gl_FragCoord.xy / uRes; vec2 d = (uv - uFocus) * vec2(uRes.x / uRes.y, 1.0);
         float r = length(d);
-        vec3 c = uC * mix(1.8, 0.6, smoothstep(0.0, 1.3, r));
+        vec3 c = uC * mix(1.12, 0.93, smoothstep(0.0, 1.3, r));
         c += vec3(0.045, 0.018, 0.0) * (1.0 - smoothstep(0.0, 1.1, r));
         gl_FragColor = vec4(c, 1.0); }`,
   })
@@ -268,3 +268,5 @@ engine.onTick((dt, t) => {
     li.classList.toggle('on', w ? win(pExp, w[1], w[2]) > 0.4 : false);
   });
 });
+
+engine.start();
