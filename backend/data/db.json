@@ -1,0 +1,61 @@
+{
+  "watches": [
+    {
+      "id": "vx1-midnight",
+      "name": "VX-1 Aero \u2014 Midnight Navy",
+      "ref": "VX-1 \u00b7 Midnight",
+      "desc": "Deep navy AeroKnit, volt-orange sole unit, reflective hits. 212 g of race-day focus.",
+      "price": 34999,
+      "oldPrice": 39999,
+      "tag": "Best Seller",
+      "photos": [
+        "/img/velocity/midnight-product.webp"
+      ],
+      "category": "Racing",
+      "createdAt": 1
+    },
+    {
+      "id": "vx1-beach",
+      "name": "VX-1 Aero \u2014 Beach Sand",
+      "ref": "VX-1 \u00b7 Beach",
+      "desc": "Sand-cream knit over a gum rubber outsole. The quiet colourway, same fast foam.",
+      "price": 32999,
+      "oldPrice": null,
+      "tag": "New",
+      "photos": [
+        "/img/velocity/sand-product.webp"
+      ],
+      "category": "Racing",
+      "createdAt": 2
+    },
+    {
+      "id": "vx1-volt",
+      "name": "VX-1 Aero \u2014 Volt Racer",
+      "ref": "VX-1 \u00b7 Volt",
+      "desc": "The night-runner. Volt-orange knit with maximum reflectivity for dark miles.",
+      "price": 36999,
+      "oldPrice": null,
+      "tag": "Limited",
+      "photos": [
+        "/img/velocity/racer-action.webp"
+      ],
+      "category": "Racing",
+      "createdAt": 3
+    },
+    {
+      "id": "vx1-concept",
+      "name": "VX-1 Concept \u2014 Exploded Edition",
+      "ref": "VX-1 \u00b7 Concept",
+      "desc": "The display piece: the four-layer stack, framed as built. For collectors of the process.",
+      "price": 39999,
+      "oldPrice": null,
+      "tag": "Concept",
+      "photos": [
+        "/img/velocity/exploded-hero.webp"
+      ],
+      "category": "Concept",
+      "createdAt": 4
+    }
+  ],
+  "orders": []
+}

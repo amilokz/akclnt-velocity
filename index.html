@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AKCLNT VELOCITY | VX-1 Aero — Built in Layers</title>
+  <meta name="description" content="AKCLNT VELOCITY by AKCLNT Studio — a cinematic 3D shoe store. Scroll to pull the VX-1 Aero apart layer by layer, switch colourways live, and shop the drop.">
+  <meta name="theme-color" content="#070A12">
+  <meta property="og:title" content="AKCLNT VELOCITY | VX-1 Aero">
+  <meta property="og:description" content="A cinematic 3D shoe store by AKCLNT Studio — scroll to explode the VX-1 Aero.">
+  <meta property="og:image" content="/img/velocity/exploded-hero.webp">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M3 21c6-1 9-6 11-11 3 4 7 6 15 6l-2 5c-8 1-16 2-24 0z%22 fill=%22%23FF6A1A%22/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" href="/models/velocity/shoe.glb" as="fetch" type="model/gltf-binary" crossorigin>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <canvas id="gl" aria-hidden="true"></canvas>
+
+  <div class="loader" role="status" aria-live="polite">
+    <svg class="loader-gauge" viewBox="0 0 200 200" aria-hidden="true">
+      <circle class="lg-track" cx="100" cy="100" r="86"/>
+      <circle class="lg-fill" cx="100" cy="100" r="86"/>
+      <g class="lg-ticks"></g>
+      <g class="lg-balance">
+        <circle cx="100" cy="100" r="34" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M100 66V134M70.6 83L129.4 117M70.6 117L129.4 83" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="100" cy="100" r="4" fill="currentColor"/>
+      </g>
+      <path class="lg-spring" d="M100 100m0-6a6 6 0 1 1-6 6a9 9 0 1 1 9 9a12 12 0 1 1-12-12a15 15 0 1 1 15 15a18 18 0 1 1-18-18" fill="none" stroke="currentColor" stroke-width=".8"/>
+    </svg>
+    <p class="loader-h"><span class="loader-n">0</span><small>%</small></p>
+    <p class="loader-line caps">Lacing up the VX-1</p>
+  </div>
+
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="AKCLNT VELOCITY — home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 21c6-1 9-6 11-11 3 4 7 6 15 6l-2 5c-8 1-16 2-24 0z" fill="currentColor"/></svg>
+      <span class="brand-name">AKCLNT</span>
+      <span class="brand-sub caps">Velocity Lab</span>
+    </a>
+    <nav class="links" aria-label="Primary">
+      <a href="#exploded">Exploded</a>
+      <a href="#tech">Tech</a>
+      <a href="#colourways">Colourways</a>
+      <a href="shop.html">Shop</a>
+      <a href="#drop">The Drop</a>
+    </nav>
+    <div class="nav-r">
+      <a class="btn btn-line" href="shop.html" data-magnetic>Shop the drop</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top" aria-label="Introduction">
+      <div class="hero-inner">
+        <p class="eyebrow caps">VX-1 Aero &nbsp;·&nbsp; Carbon-tuned racer &nbsp;·&nbsp; AKCLNT Velocity Lab</p>
+        <h1 class="hero-title"><span class="ln">Built in layers.</span><span class="ln">Tuned for</span><span class="ln"><em>pure speed.</em></span></h1>
+        <p class="hero-lede">The VX-1 Aero is a racing shoe you can take apart with a scroll. Four engineered layers, one obsession: getting you to the line faster.</p>
+        <div class="hero-cta">
+          <a class="btn btn-solid" href="shop.html" data-magnetic>Shop the drop</a>
+          <a class="btn-text caps" href="#exploded">Explode it <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      <dl class="hero-spec caps">
+        <div><dt>Weight</dt><dd>212 g</dd></div>
+        <div><dt>Stack</dt><dd>38 mm</dd></div>
+        <div><dt>Drop</dt><dd>8 mm</dd></div>
+      </dl>
+      <p class="hint caps" aria-hidden="true"><span class="hint-dot"></span>Move to tilt the shoe &nbsp;·&nbsp; scroll to pull it apart</p>
+    </section>
+
+    <section class="exploded" id="exploded" aria-label="The shoe, exploded">
+      <div class="stage">
+        <article class="step" data-k="1">
+          <p class="fig caps">Fig. I &nbsp;—&nbsp; The stack, separated</p>
+          <h2>Four layers. <em>One system.</em></h2>
+          <p>Outsole, midsole, upper, lacing — each layer of the VX-1 was designed on its own, then tuned as a single machine. Keep scrolling and watch it come apart along the stack.</p>
+        </article>
+        <article class="step" data-k="2">
+          <p class="fig caps">Fig. II &nbsp;—&nbsp; Outsole</p>
+          <h2>Grip that <em>bites back.</em></h2>
+          <p>A full-length rubber compound mapped to the pressure path of a footstrike — more rubber where you land, less where you don't. Wet roads included.</p>
+          <ul class="spec caps"><li><b>3.2</b> mm lugs</li><li><b>Wet</b> grip rated</li><li><b>Full</b> length</li></ul>
+        </article>
+        <article class="step" data-k="3">
+          <p class="fig caps">Fig. III &nbsp;—&nbsp; Midsole</p>
+          <h2>Foam that <em>returns the favour.</em></h2>
+          <p>Nitrogen-infused foam compresses on landing and gives the energy straight back on toe-off. Soft is slow — this foam is neither.</p>
+          <ul class="spec caps"><li><b>85%</b> energy return</li><li><b>38</b> mm stack</li><li><b>N₂</b> infused</li></ul>
+        </article>
+        <article class="step" data-k="4">
+          <p class="fig caps">Fig. IV &nbsp;—&nbsp; Upper &amp; lacing</p>
+          <h2>A sock that thinks <em>it's a shoe.</em></h2>
+          <p>One-piece AeroKnit wraps the midfoot like a second skin, and the lacing system locks the heel without a single pressure point. Nothing flaps, nothing slips.</p>
+          <ul class="spec caps"><li><b>1-piece</b> knit</li><li><b>0</b> slip at heel</li><li><b>212</b> g total</li></ul>
+        </article>
+        <ol class="rail caps" aria-hidden="true">
+          <li data-k="1">I</li><li data-k="2">II</li><li data-k="3">III</li><li data-k="4">IV</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="tech" id="tech" aria-label="Tech numbers">
+      <div class="stage">
+        <header class="tech-head" data-k="5">
+          <p class="fig caps">Tech</p>
+          <h2>Numbers, <em>not adjectives.</em></h2>
+        </header>
+        <article class="tech-card" data-k="5">
+          <p class="tech-n"><b>212</b><span class="caps">grams per shoe · UK 9</span></p>
+          <h3>Feather build</h3>
+          <p>Every gram was argued over. The VX-1 lands in featherweight territory without giving up the foam that makes it fast over distance.</p>
+        </article>
+        <article class="tech-card" data-k="6">
+          <p class="tech-n"><b>38</b><span class="caps">mm of stack height</span></p>
+          <h3>Max cushion</h3>
+          <p>A tall, legal stack that protects your legs at kilometre 30 the same way it did at kilometre one.</p>
+        </article>
+        <article class="tech-card" data-k="7">
+          <p class="tech-n"><b>8</b><span class="caps">mm heel-to-toe drop</span></p>
+          <h3>Fast transition</h3>
+          <p>The geometry rolls you forward — land, load, launch. The drop is tuned so the shoe disappears and only the pace remains.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="colourways" id="colourways" aria-label="Colourways">
+      <div class="stage">
+        <header class="cw-head" data-k="8">
+          <p class="fig caps">Colourways</p>
+          <h2>Three colourways. <em>One silhouette.</em></h2>
+          <p>Tap a colourway and watch the shoe change skin — live, on the 3D model.</p>
+          <div class="cw-buttons">
+            <button class="cw-btn active" type="button" data-tex="midnight"><i style="background:#1B2A4A"></i>Midnight Navy</button>
+            <button class="cw-btn" type="button" data-tex="beach"><i style="background:#D9C6A5"></i>Beach Sand</button>
+            <button class="cw-btn" type="button" data-tex="street"><i style="background:#6B7280"></i>Street Ash</button>
+          </div>
+        </header>
+        <div class="cw-options" data-k="8">
+          <article class="cw-option">
+            <p class="caps cw-n">VX-1 · Midnight</p>
+            <h3>Midnight Navy</h3>
+            <p>Deep navy knit, volt-orange sole unit, reflective hits.</p>
+            <p class="price">PKR 34,999</p>
+          </article>
+          <article class="cw-option cw-main">
+            <p class="caps cw-n">VX-1 · Beach</p>
+            <h3>Beach Sand</h3>
+            <p>Sand-cream knit over a gum rubber outsole. The quiet one.</p>
+            <p class="price">PKR 32,999</p>
+          </article>
+          <article class="cw-option">
+            <p class="caps cw-n">VX-1 · Street</p>
+            <h3>Street Ash</h3>
+            <p>Ash-grey knit, tonal panels, city-proof finish.</p>
+            <p class="price">PKR 33,999</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="lab" id="lab" aria-label="The lab">
+      <div class="stage">
+        <div class="lab-inner" data-k="9">
+          <p class="fig caps">Velocity Lab &nbsp;·&nbsp; AKCLNT Studio, Pakistan</p>
+          <h2>Tested on the road. <em>Proven in the lab.</em></h2>
+          <p>Forty-two prototypes died so this one could live. Every pair is checked against the same benchmarks before it earns the VX-1 name — foam density, outsole wear, knit stretch, the lot.</p>
+          <dl class="stats">
+            <div><dt>500</dt><dd class="caps">km durability test</dd></div>
+            <div><dt>42</dt><dd class="caps">prototypes built</dd></div>
+            <div><dt>16</dt><dd class="caps">test runners</dd></div>
+            <div><dt>3</dt><dd class="caps">foam compounds tried</dd></div>
+          </dl>
+          <p class="bench caps">At the bench &nbsp;—&nbsp; The AKCLNT Studio team · Design · Engineering · Testing · Quality</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="vel-gallery" id="gallery" aria-label="Gallery">
+      <header class="vel-gallery-head">
+        <p class="fig caps">The VX-1, framed</p>
+        <h2>Studio shots. <em>Street proof.</em></h2>
+        <p>The exploded stack, the Midnight colourway up close, and the Volt Racer doing what it was built for.</p>
+      </header>
+      <div class="vel-gallery-grid">
+        <figure>
+          <img src="/img/velocity/exploded-hero.webp" alt="VX-1 Aero exploded into its four layers on a dark navy background" loading="lazy">
+          <figcaption class="caps">Exploded · The four-layer stack</figcaption>
+        </figure>
+        <figure>
+          <img src="/img/velocity/midnight-product.webp" alt="VX-1 Aero in Midnight Navy with volt-orange accents" loading="lazy">
+          <figcaption class="caps">Midnight Navy · Studio</figcaption>
+        </figure>
+        <figure>
+          <img src="/img/velocity/racer-action.webp" alt="Runner sprinting at night in volt-orange VX-1 Aero shoes" loading="lazy">
+          <figcaption class="caps">Volt Racer · On the road</figcaption>
+        </figure>
+      </div>
+      <p class="vel-gallery-cta"><a class="btn btn-solid" href="shop.html" data-magnetic>Browse the full drop</a></p>
+    </section>
+
+    <section class="cta" id="drop" aria-label="The drop">
+      <div class="cta-inner" data-k="10">
+        <p class="fig caps">The Drop &nbsp;·&nbsp; First release</p>
+        <h2>The first drop <em>opens soon.</em></h2>
+        <p>First-release pairs are limited. When the timer hits zero, the shop opens — message us on WhatsApp to reserve your size ahead of the crowd.</p>
+        <div class="countdown" aria-label="Countdown to the drop">
+          <div><b id="cd-d">00</b><span>Days</span></div>
+          <div><b id="cd-h">00</b><span>Hours</span></div>
+          <div><b id="cd-m">00</b><span>Mins</span></div>
+          <div><b id="cd-s">00</b><span>Secs</span></div>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-solid" href="https://wa.me/923238559822?text=Hello%20AKCLNT%20VELOCITY%2C%20I%20want%20to%20reserve%20the%20VX-1%20Aero." data-magnetic>Reserve on WhatsApp</a>
+          <a class="btn-text caps" href="#exploded">See it exploded again <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="foot-top">
+        <p class="foot-word">AKCLNT</p>
+        <p class="foot-line">Designed &amp; built by AKCLNT Studio, <em>Pakistan.</em></p>
+      </div>
+      <div class="foot-cols caps">
+        <p>AKCLNT VELOCITY<br>Velocity Lab<br>Rawalpindi, Pakistan</p>
+        <p><a href="#exploded">Exploded</a><br><a href="#colourways">Colourways</a><br><a href="shop.html">Shop</a></p>
+        <p><a href="#tech">Tech</a><br><a href="#gallery">Gallery</a><br><a href="#drop">The Drop</a></p>
+        <p>© 2026 AKCLNT<br>info@akclnt.com<br>akclnt.com</p>
+      </div>
+      <p class="caps" style="margin-top:26px; opacity:.55; font-size:9px;">3D shoe model: “Materials Variants Shoe” by Shopify, Inc. — CC BY 4.0. Split into layers and re-textured by AKCLNT Studio.</p>
+    </footer>
+  </main>
+
+  <div class="labels" aria-hidden="true">
+    <div class="label" data-band="3"><b>Collar &amp; Laces</b><span>Lockdown system</span></div>
+    <div class="label" data-band="2"><b>AeroKnit Upper</b><span>One-piece wrap</span></div>
+    <div class="label" data-band="1"><b>N₂ Foam Midsole</b><span>85% energy return</span></div>
+    <div class="label" data-band="0"><b>Rubber Outsole</b><span>Wet-grip compound</span></div>
+  </div>
+  <div class="toast caps" role="status"></div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

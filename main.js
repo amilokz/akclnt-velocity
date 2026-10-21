@@ -1,0 +1,276 @@
+/* AKCLNT VELOCITY — VX-1 Aero
+   A cinematic scroll store: the shoe floats in the hero, pulls apart layer
+   by layer in the Exploded chapter, changes colourways live, and settles
+   beside the drop countdown.
+   Engine core: AKCLNT Studio (three.js). Shoe: Shopify CC BY 4.0 sample,
+   split into four layers by AKCLNT Studio. */
+import { Engine, THREE, damp } from './src/core/engine.js';
+import { Assets } from './src/core/assets.js';
+import { Pointer } from './src/core/input.js';
+import { smoothScroll, gsap, elementProgress } from './src/core/scroll.js';
+import { preloader, cursor, magnetic } from './src/core/ui.js';
+import { makeStudio } from './studio.js';
+import { ContactShadow } from './shadow.js';
+
+const canvas = document.getElementById('gl');
+const IS_SMALL = matchMedia('(pointer: coarse)').matches || innerWidth < 900;
+const DPR = IS_SMALL ? 1 : 1.25;
+
+const engine = new Engine({
+  canvas, fov: 30, near: 0.05, far: 120, dpr: DPR, background: 0x070a12,
+  post: {
+    tone: 'neutral',
+    ao: { aoRadius: 0.16, intensity: 2.0, distanceFalloff: 1.1, aoSamples: 8 },
+    bloom: { intensity: 0.5, luminanceThreshold: 1.25, luminanceSmoothing: 0.25, radius: 0.62 },
+    vignette: false, noise: 0.02, ca: 0.0004,
+  },
+});
+const { scene, camera, renderer } = engine;
+renderer.setClearColor(0x070a12, 1);
+makeStudio(renderer, scene, { front: 2.0, dome: 1.3 });
+camera.position.set(0, 0.35, 9);
+
+/* Backdrop — fullscreen gradient, deep graphite navy with a volt breath. */
+const backdrop = new THREE.Mesh(
+  new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1, 3, 0], 3)),
+  new THREE.ShaderMaterial({
+    depthWrite: false, depthTest: false,
+    uniforms: {
+      uC: { value: new THREE.Color(0x0a0e1a) },
+      uRes: { value: new THREE.Vector2(1, 1) },
+      uFocus: { value: new THREE.Vector2(0.62, 0.5) },
+    },
+    vertexShader: 'void main(){ gl_Position = vec4(position.xy, 1.0, 1.0); }',
+    fragmentShader: `uniform vec3 uC; uniform vec2 uRes, uFocus;
+      void main(){ vec2 uv = gl_FragCoord.xy / uRes; vec2 d = (uv - uFocus) * vec2(uRes.x / uRes.y, 1.0);
+        float r = length(d);
+        vec3 c = uC * mix(1.8, 0.6, smoothstep(0.0, 1.3, r));
+        c += vec3(0.030, 0.012, 0.002) * (1.0 - smoothstep(0.0, 1.1, r));
+        gl_FragColor = vec4(c, 1.0); }`,
+  })
+);
+backdrop.frustumCulled = false;
+backdrop.renderOrder = -10;
+scene.add(backdrop);
+engine.onResize((w, h, dpr) => backdrop.material.uniforms.uRes.value.set(w * dpr, h * dpr));
+
+const shadow = new ContactShadow(renderer, scene, { width: 8.5, depth: 5, y: -1.1, res: IS_SMALL ? 256 : 384, far: 3.4, blur: 3.2, opacity: 0.5 });
+shadow.hidden.push(backdrop);
+
+/* ─── Loader ─── */
+const assets = new Assets();
+const loaderEl = document.querySelector('.loader');
+{
+  const g = loaderEl.querySelector('.lg-ticks');
+  for (let i = 0; i <= 72; i += 6) {
+    const a = (i / 72) * Math.PI * 2 - Math.PI / 2, r0 = i % 24 ? 90 : 89, r1 = i % 24 ? 94 : 98;
+    g.insertAdjacentHTML('beforeend', `<line x1="${100 + Math.cos(a) * r0}" y1="${100 + Math.sin(a) * r0}" x2="${100 + Math.cos(a) * r1}" y2="${100 + Math.sin(a) * r1}"/>`);
+  }
+}
+const loader = preloader({
+  assets, el: loaderEl, minTime: 650,
+  onValue: (v) => { loaderEl.style.setProperty('--p', v); loaderEl.querySelector('.loader-n').textContent = Math.round(v * 100); },
+  exit: () => gsap.timeline()
+    .to('.loader-gauge', { scale: 1.08, duration: 0.5, ease: 'power2.out' })
+    .to(loaderEl, { clipPath: 'inset(0 0 100% 0)', duration: 1.1, ease: 'expo.inOut' }, 0.25),
+});
+
+const pointer = new Pointer({ lambda: 5 });
+cursor({ color: '#FFB37A' });
+magnetic();
+smoothScroll({ lerp: 0.08 });
+
+/* ─── Shoe ─── */
+const rig = new THREE.Group();
+scene.add(rig);
+let shoe = null;
+let bands = [];
+let shoeMaterial = null;
+let midnightTex = null;
+const texCache = {};
+let spinKick = 0;
+
+function prepShoe(gltf) {
+  const root = gltf.scene;
+  const box = new THREE.Box3().setFromObject(root);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const s = 3.5 / size.x;
+  const group = new THREE.Group();
+  const bandGroups = [];
+  root.children.slice().forEach((node) => {
+    const bg = new THREE.Group();
+    node.position.sub(center);
+    bg.add(node);
+    group.add(bg);
+    bandGroups.push(bg);
+    node.traverse((o) => {
+      if (o.isMesh) {
+        o.frustumCulled = false;
+        if (!shoeMaterial) { shoeMaterial = o.material; midnightTex = shoeMaterial.map; }
+      }
+    });
+  });
+  group.scale.setScalar(s);
+  return { group, bandGroups };
+}
+
+/* ─── Scroll choreography ─── */
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+const ss = (v, a, b) => { const t = clamp01((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+const lerp = (a, b, t) => a + (b - a) * t;
+
+const stages = [
+  { el: '.hero',       st: { x: 1.45, y: -0.15, ry: -0.55, rx: 0.10, rz: 0.06, camZ: 8.6, s: 1.0, explode: 0 } },
+  { el: '.exploded',   st: { x: 0, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 9.4, s: 1.0, explode: 1 }, at: 0.45 },
+  { el: '.tech',       st: { x: -1.75, y: 0, ry: 0.75, rx: 0.08, rz: 0, camZ: 9.2, s: 0.95, explode: 0.4 }, at: 0.3 },
+  { el: '.colourways', st: { x: 0, y: -0.1, ry: -0.30, rx: 0.04, rz: 0, camZ: 8.2, s: 1.05, explode: 0 }, at: 0.35 },
+  { el: '.lab',        st: { x: -1.6, y: 0, ry: 0.50, rx: 0.10, rz: 0, camZ: 9.6, s: 0.9, explode: 0.12 }, at: 0.4 },
+  { el: '.cta',        st: { x: 1.35, y: -0.05, ry: -0.85, rx: 0.10, rz: 0.04, camZ: 9.8, s: 0.95, explode: 0.2 }, at: 0.4 },
+];
+let anchors = [];
+function measure() {
+  const y = window.scrollY;
+  anchors = stages.map((s) => {
+    const el = document.querySelector(s.el);
+    const top = el.getBoundingClientRect().top + y;
+    return { scroll: top + el.offsetHeight * (s.at ?? 0), st: s.st };
+  });
+}
+measure();
+addEventListener('resize', measure);
+setTimeout(measure, 600);
+setTimeout(measure, 1800);
+
+function stageState(scrollY) {
+  if (!anchors.length) return stages[0].st;
+  if (scrollY <= anchors[0].scroll) return anchors[0].st;
+  for (let i = 0; i < anchors.length - 1; i++) {
+    const a = anchors[i], b = anchors[i + 1];
+    if (scrollY <= b.scroll) {
+      const t = ss(scrollY, a.scroll, b.scroll);
+      const o = {};
+      for (const k in a.st) o[k] = lerp(a.st[k], b.st[k], t);
+      return o;
+    }
+  }
+  return anchors[anchors.length - 1].st;
+}
+
+const steps = [...document.querySelectorAll('[data-k]')];
+const windows = {
+  1: ['.exploded', 0.02, 0.30], 2: ['.exploded', 0.30, 0.55], 3: ['.exploded', 0.55, 0.78], 4: ['.exploded', 0.78, 0.995],
+  5: ['.tech', 0.04, 0.46], 6: ['.tech', 0.40, 0.72], 7: ['.tech', 0.66, 0.97],
+  8: ['.colourways', 0.08, 0.96], 9: ['.lab', 0.12, 0.97], 10: ['.cta', 0.1, 1.01],
+};
+const sectionEls = {};
+for (const k in windows) sectionEls[windows[k][0]] = document.querySelector(windows[k][0]);
+const win = (p, a, b) => ss(p, a, a + 0.07) * (1 - ss(p, b - 0.07, b));
+
+const labelEls = [...document.querySelectorAll('.label')];
+const projV = new THREE.Vector3();
+function updateLabels(explodeCur, pExp) {
+  const show = explodeCur > 0.3 && pExp > 0 && pExp < 1;
+  for (const el of labelEls) {
+    const band = bands[+el.dataset.band];
+    if (!band || !show) { el.style.setProperty('--v', 0); continue; }
+    band.getWorldPosition(projV);
+    projV.x += (+el.dataset.band % 2 === 0 ? -1 : 1) * 1.3;
+    projV.project(camera);
+    el.style.setProperty('--lx', ((projV.x * 0.5 + 0.5) * innerWidth).toFixed(1) + 'px');
+    el.style.setProperty('--ly', ((-projV.y * 0.5 + 0.5) * innerHeight).toFixed(1) + 'px');
+    el.style.setProperty('--v', Math.min(1, (explodeCur - 0.3) / 0.4).toFixed(3));
+  }
+}
+
+/* Colourways — live texture swap on the shared shoe material. */
+document.querySelectorAll('.cw-btn').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    document.querySelectorAll('.cw-btn').forEach((b) => b.classList.toggle('active', b === btn));
+    spinKick += 3.2;
+    if (!shoeMaterial) return;
+    const name = btn.dataset.tex;
+    if (name === 'midnight') { shoeMaterial.map = midnightTex; shoeMaterial.needsUpdate = true; return; }
+    if (!texCache[name]) texCache[name] = await assets.texture(`img/velocity/tex-${name}.webp`, { flipY: false });
+    shoeMaterial.map = texCache[name];
+    shoeMaterial.needsUpdate = true;
+  });
+});
+
+/* Drop countdown — first release, 5 Nov 2026, 19:00 PKT. */
+const dropAt = new Date('2026-11-05T19:00:00+05:00').getTime();
+const cdEls = { d: document.getElementById('cd-d'), h: document.getElementById('cd-h'), m: document.getElementById('cd-m'), s: document.getElementById('cd-s') };
+function tickCountdown() {
+  let diff = Math.max(0, dropAt - Date.now());
+  const d = Math.floor(diff / 864e5); diff -= d * 864e5;
+  const h = Math.floor(diff / 36e5); diff -= h * 36e5;
+  const m = Math.floor(diff / 6e4); diff -= m * 6e4;
+  const s = Math.floor(diff / 1e3);
+  const pad = (n) => String(n).padStart(2, '0');
+  if (cdEls.d) { cdEls.d.textContent = pad(d); cdEls.h.textContent = pad(h); cdEls.m.textContent = pad(m); cdEls.s.textContent = pad(s); }
+}
+tickCountdown();
+setInterval(tickCountdown, 1000);
+
+/* ─── Boot ─── */
+const shoeLoad = assets.gltf('models/velocity/shoe.glb');
+(async () => {
+  try {
+    const gltf = await shoeLoad;
+    const built = prepShoe(gltf);
+    shoe = built.group;
+    bands = built.bandGroups;
+    rig.add(shoe);
+  } catch (err) {
+    console.error('AKCLNT VELOCITY — shoe failed to load', err);
+  }
+  await loader.finish();
+  gsap.to('.hero-inner > *', { opacity: 1, y: 0, duration: 1.2, stagger: 0.09, ease: 'power3.out', delay: 0.1 });
+  gsap.to('.hero-spec', { opacity: 1, duration: 1.2, delay: 0.55 });
+  gsap.to('.hint', { opacity: 1, duration: 1.2, delay: 0.85 });
+  window.__ready = true;
+})();
+
+const cur = { ...stages[0].st };
+let explodeCur = 0;
+engine.onTick((dt, t) => {
+  pointer.update(dt);
+  const scrollY = window.scrollY;
+  const target = stageState(scrollY);
+  const pExp = elementProgress(sectionEls['.exploded']);
+  let ry = target.ry;
+  if (pExp > 0 && pExp < 1) ry += (pExp - 0.45) * 1.1;
+  spinKick = damp(spinKick, 0, 2.2, dt);
+  ry += spinKick * dt * 2.4;
+  for (const k in cur) cur[k] = damp(cur[k], k === 'ry' ? ry : target[k], 4.2, dt);
+
+  let exT = target.explode;
+  if (pExp > 0 && pExp < 1) exT = ss(pExp, 0.08, 0.45) * (1 - ss(pExp, 0.9, 1) * 0.55);
+  explodeCur = damp(explodeCur, exT, 5, dt);
+
+  const xF = IS_SMALL ? 0.42 : 1;
+  rig.position.set(
+    cur.x * xF + pointer.sx * 0.14,
+    cur.y + Math.sin(t * 0.8) * 0.045 - pointer.sy * 0.08,
+    0
+  );
+  rig.rotation.set(cur.rx + pointer.sy * 0.07, cur.ry + pointer.sx * 0.16, cur.rz);
+  rig.scale.setScalar(cur.s);
+  camera.position.set(0, 0.35, cur.camZ + (IS_SMALL ? 1.7 : 0));
+  camera.lookAt(0, -0.05, 0);
+
+  if (shoe) bands.forEach((bg, i) => { bg.position.y = (i - 1.5) * 0.66 * explodeCur; });
+  updateLabels(explodeCur, pExp);
+
+  for (const el of steps) {
+    const w = windows[el.dataset.k];
+    if (!w) continue;
+    const v = win(elementProgress(sectionEls[w[0]]), w[1], w[2]);
+    el.style.setProperty('--v', v.toFixed(3));
+    el.classList.toggle('is-v', v > 0.4);
+  }
+  document.querySelectorAll('.rail li').forEach((li) => {
+    const w = windows[li.dataset.k];
+    li.classList.toggle('on', w ? win(pExp, w[1], w[2]) > 0.4 : false);
+  });
+});
