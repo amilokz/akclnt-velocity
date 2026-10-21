@@ -115,7 +115,7 @@ const ss = (v, a, b) => { const t = clamp01((v - a) / (b - a)); return t * t * (
 const lerp = (a, b, t) => a + (b - a) * t;
 
 const stages = [
-  { el: '.hero',       st: { x: 1.8, y: -0.2, ry: -0.50, rx: 0.15, rz: 0.05, camZ: 8.6, s: 0.55, explode: 0 } },
+  { el: '.hero',       st: { x: 1.72, y: 0.05, ry: -0.35, rx: 0.12, rz: 0.04, camZ: 8.6, s: 0.85, explode: 0 } },
   { el: '.anchor-descent', st: { x: 0.15, y: -0.5, ry: -0.25, rx: 0.08, rz: 0.02, camZ: 8.8, s: 0.95, explode: 0 } },
   { el: '.exploded',   st: { x: 0, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 9.6, s: 1.02, explode: 1 }, at: 0.45 },
   { el: '.tech',       st: { x: 1.8, y: 0, ry: 0.75, rx: 0.08, rz: 0, camZ: 9.2, s: 0.95, explode: 0.55 }, at: 0.3 },
@@ -125,6 +125,8 @@ const stages = [
 ];
 if (IS_SMALL) stages[0].st = { x: 0.9, y: -0.2, ry: -0.5, rx: 0.1, rz: 0.05, camZ: 8.6, s: 0.85, explode: 0 };
 const modelEl = document.querySelector('.hero-model');
+const filmEl = document.querySelector('.hero-film');
+if (filmEl) filmEl.addEventListener('loadedmetadata', () => { filmEl.pause(); try { filmEl.currentTime = 0.01; } catch {} });
 const sideItems = [...document.querySelectorAll('.stack-side li')];
 let anchors = [];
 function measure() {
@@ -254,7 +256,7 @@ engine.onTick((dt, t) => {
     0
   );
   rig.rotation.set(cur.rx + pointer.sy * 0.07, cur.ry + pointer.sx * 0.16, cur.rz);
-  const reveal = IS_SMALL ? 1 : ss(scrollY, innerHeight * 0.05, innerHeight * 0.6);
+  const reveal = IS_SMALL ? 1 : ss(scrollY, innerHeight * 0.25, innerHeight * 0.6);
   rig.scale.setScalar(Math.max(0.0001, cur.s * reveal));
   camera.position.set(0, 0.35, cur.camZ + (IS_SMALL ? 1.7 : 0));
   camera.lookAt(0, -0.05, 0);
@@ -284,9 +286,14 @@ engine.onTick((dt, t) => {
     li.classList.toggle('on', w ? win(pExp, w[1], w[2]) > 0.4 : false);
   }
   if (modelEl) {
-    const mf = 1 - ss(scrollY, innerHeight * 0.05, innerHeight * 0.6);
+    const mf = 1 - ss(scrollY, innerHeight * 0.25, innerHeight * 0.6);
     modelEl.style.opacity = mf.toFixed(3);
     modelEl.style.visibility = mf <= 0.01 ? 'hidden' : 'visible';
+  }
+  if (filmEl && !IS_SMALL && scrollY < innerHeight * 0.7 && filmEl.readyState >= 1) {
+    const dur = filmEl.duration || 10;
+    const ft = Math.min(1, scrollY / (innerHeight * 0.6)) * (dur - 0.05);
+    if (Math.abs(filmEl.currentTime - ft) > 0.045) { try { filmEl.currentTime = ft; } catch {} }
   }
 });
 
