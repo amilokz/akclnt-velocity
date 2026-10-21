@@ -101,7 +101,7 @@ function prepShoe(gltf) {
     node.traverse((o) => {
       if (o.isMesh) {
         o.frustumCulled = false;
-        if (!shoeMaterial) { shoeMaterial = o.material; midnightTex = shoeMaterial.map; }
+        if (!shoeMaterial) { shoeMaterial = o.material; midnightTex = shoeMaterial.map; shoeMaterial.color.set(0x2e2e33); }
       }
     });
   });
@@ -115,11 +115,11 @@ const ss = (v, a, b) => { const t = clamp01((v - a) / (b - a)); return t * t * (
 const lerp = (a, b, t) => a + (b - a) * t;
 
 const stages = [
-  { el: '.hero',       st: { x: 1.45, y: -0.15, ry: -0.55, rx: 0.10, rz: 0.06, camZ: 8.6, s: 1.0, explode: 0 } },
-  { el: '.exploded',   st: { x: 0, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 9.4, s: 1.0, explode: 1 }, at: 0.45 },
-  { el: '.tech',       st: { x: -1.75, y: 0, ry: 0.75, rx: 0.08, rz: 0, camZ: 9.2, s: 0.95, explode: 0.4 }, at: 0.3 },
+  { el: '.hero',       st: { x: 1.35, y: -0.15, ry: -0.55, rx: 0.10, rz: 0.06, camZ: 8.6, s: 1.0, explode: 0 } },
+  { el: '.exploded',   st: { x: 0.55, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 8.8, s: 1.12, explode: 1 }, at: 0.45 },
+  { el: '.tech',       st: { x: 1.8, y: 0, ry: 0.75, rx: 0.08, rz: 0, camZ: 9.2, s: 0.95, explode: 0.55 }, at: 0.3 },
   { el: '.colourways', st: { x: 0, y: -0.1, ry: -0.30, rx: 0.04, rz: 0, camZ: 8.2, s: 1.05, explode: 0 }, at: 0.35 },
-  { el: '.lab',        st: { x: -1.6, y: 0, ry: 0.50, rx: 0.10, rz: 0, camZ: 9.6, s: 0.9, explode: 0.12 }, at: 0.4 },
+  { el: '.lab',        st: { x: 1.7, y: 0, ry: 0.50, rx: 0.10, rz: 0, camZ: 9.6, s: 0.9, explode: 0.12 }, at: 0.4 },
   { el: '.cta',        st: { x: 1.35, y: -0.05, ry: -0.85, rx: 0.10, rz: 0.04, camZ: 9.8, s: 0.95, explode: 0.2 }, at: 0.4 },
 ];
 let anchors = [];
@@ -164,7 +164,7 @@ const win = (p, a, b) => ss(p, a, a + 0.07) * (1 - ss(p, b - 0.07, b));
 const labelEls = [...document.querySelectorAll('.label')];
 const projV = new THREE.Vector3();
 function updateLabels(explodeCur, pExp) {
-  const show = explodeCur > 0.3 && pExp > 0 && pExp < 1;
+  const show = explodeCur > 0.18 && pExp > 0 && pExp < 1;
   for (const el of labelEls) {
     const band = bands[+el.dataset.band];
     if (!band || !show) { el.style.setProperty('--v', 0); continue; }
@@ -173,7 +173,7 @@ function updateLabels(explodeCur, pExp) {
     projV.project(camera);
     el.style.setProperty('--lx', ((projV.x * 0.5 + 0.5) * innerWidth).toFixed(1) + 'px');
     el.style.setProperty('--ly', ((-projV.y * 0.5 + 0.5) * innerHeight).toFixed(1) + 'px');
-    el.style.setProperty('--v', Math.min(1, (explodeCur - 0.3) / 0.4).toFixed(3));
+    el.style.setProperty('--v', Math.min(1, (explodeCur - 0.18) / 0.35).toFixed(3));
   }
 }
 
@@ -184,9 +184,10 @@ document.querySelectorAll('.cw-btn').forEach((btn) => {
     spinKick += 3.2;
     if (!shoeMaterial) return;
     const name = btn.dataset.tex;
-    if (name === 'midnight') { shoeMaterial.map = midnightTex; shoeMaterial.needsUpdate = true; return; }
+    if (name === 'midnight') { shoeMaterial.map = midnightTex; shoeMaterial.color.set(0x2e2e33); shoeMaterial.needsUpdate = true; return; }
     if (!texCache[name]) texCache[name] = await assets.texture(`img/velocity/tex-${name}.webp`, { flipY: false });
     shoeMaterial.map = texCache[name];
+    shoeMaterial.color.set(0xffffff);
     shoeMaterial.needsUpdate = true;
   });
 });
@@ -233,13 +234,13 @@ engine.onTick((dt, t) => {
   const target = stageState(scrollY);
   const pExp = elementProgress(sectionEls['.exploded']);
   let ry = target.ry;
-  if (pExp > 0 && pExp < 1) ry += (pExp - 0.45) * 1.1;
+  if (pExp > 0 && pExp < 1) ry += (pExp - 0.45) * 1.7;
   spinKick = damp(spinKick, 0, 2.2, dt);
   ry += spinKick * dt * 2.4;
   for (const k in cur) cur[k] = damp(cur[k], k === 'ry' ? ry : target[k], 4.2, dt);
 
   let exT = target.explode;
-  if (pExp > 0 && pExp < 1) exT = ss(pExp, 0.08, 0.45) * (1 - ss(pExp, 0.9, 1) * 0.55);
+  if (pExp > 0 && pExp < 1) exT = ss(pExp, 0.06, 0.38) * (1 - ss(pExp, 0.93, 1) * 0.45);
   explodeCur = damp(explodeCur, exT, 5, dt);
 
   const xF = IS_SMALL ? 0.42 : 1;
@@ -253,7 +254,13 @@ engine.onTick((dt, t) => {
   camera.position.set(0, 0.35, cur.camZ + (IS_SMALL ? 1.7 : 0));
   camera.lookAt(0, -0.05, 0);
 
-  if (shoe) bands.forEach((bg, i) => { bg.position.y = (i - 1.5) * 0.66 * explodeCur; });
+  if (shoe) bands.forEach((bg, i) => {
+    const off = i - 1.5;
+    bg.position.y = off * 1.02 * explodeCur + Math.sin(t * 1.25 + i * 1.7) * 0.035 * explodeCur;
+    bg.position.x = off * 0.16 * explodeCur;
+    bg.rotation.y = off * 0.18 * explodeCur;
+    bg.rotation.z = off * 0.05 * explodeCur;
+  });
   updateLabels(explodeCur, pExp);
 
   for (const el of steps) {
