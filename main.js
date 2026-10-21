@@ -115,7 +115,7 @@ const ss = (v, a, b) => { const t = clamp01((v - a) / (b - a)); return t * t * (
 const lerp = (a, b, t) => a + (b - a) * t;
 
 const stages = [
-  { el: '.hero',       st: { x: 2.0, y: -0.12, ry: -0.50, rx: 0.30, rz: 0.30, camZ: 8.6, s: 0.26, explode: 0 } },
+  { el: '.hero',       st: { x: 1.8, y: -0.2, ry: -0.50, rx: 0.15, rz: 0.05, camZ: 8.6, s: 0.55, explode: 0 } },
   { el: '.anchor-descent', st: { x: 0.15, y: -0.5, ry: -0.25, rx: 0.08, rz: 0.02, camZ: 8.8, s: 0.95, explode: 0 } },
   { el: '.exploded',   st: { x: 0, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 9.6, s: 1.02, explode: 1 }, at: 0.45 },
   { el: '.tech',       st: { x: 1.8, y: 0, ry: 0.75, rx: 0.08, rz: 0, camZ: 9.2, s: 0.95, explode: 0.55 }, at: 0.3 },
@@ -254,7 +254,8 @@ engine.onTick((dt, t) => {
     0
   );
   rig.rotation.set(cur.rx + pointer.sy * 0.07, cur.ry + pointer.sx * 0.16, cur.rz);
-  rig.scale.setScalar(cur.s);
+  const reveal = IS_SMALL ? 1 : ss(scrollY, innerHeight * 0.05, innerHeight * 0.6);
+  rig.scale.setScalar(Math.max(0.0001, cur.s * reveal));
   camera.position.set(0, 0.35, cur.camZ + (IS_SMALL ? 1.7 : 0));
   camera.lookAt(0, -0.05, 0);
 
