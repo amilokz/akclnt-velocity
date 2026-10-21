@@ -538,3 +538,4 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
 .stack-side li.on { color: var(--ink); }
 .stack-side li.on b { color: var(--rose-deep); }
 @media (max-width: 900px) { .hero-model { display: none; } .stack-side { display: none; } .ghost { font-size: 44vw; } }
+.anchor-descent { position: absolute; top: 100%; left: 0; width: 1px; height: 1px; }
