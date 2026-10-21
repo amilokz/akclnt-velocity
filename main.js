@@ -115,13 +115,16 @@ const ss = (v, a, b) => { const t = clamp01((v - a) / (b - a)); return t * t * (
 const lerp = (a, b, t) => a + (b - a) * t;
 
 const stages = [
-  { el: '.hero',       st: { x: 1.35, y: -0.15, ry: -0.55, rx: 0.10, rz: 0.06, camZ: 8.6, s: 1.0, explode: 0 } },
-  { el: '.exploded',   st: { x: 0.55, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 8.8, s: 1.12, explode: 1 }, at: 0.45 },
+  { el: '.hero',       st: { x: 1.72, y: -0.35, ry: -0.50, rx: 0.15, rz: 0.06, camZ: 8.6, s: 0.3, explode: 0 } },
+  { el: '.exploded',   st: { x: 0.1, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 9.6, s: 1.02, explode: 1 }, at: 0.45 },
   { el: '.tech',       st: { x: 1.8, y: 0, ry: 0.75, rx: 0.08, rz: 0, camZ: 9.2, s: 0.95, explode: 0.55 }, at: 0.3 },
   { el: '.colourways', st: { x: 0, y: -0.1, ry: -0.30, rx: 0.04, rz: 0, camZ: 8.2, s: 1.05, explode: 0 }, at: 0.35 },
   { el: '.lab',        st: { x: 1.7, y: 0, ry: 0.50, rx: 0.10, rz: 0, camZ: 9.6, s: 0.9, explode: 0.12 }, at: 0.4 },
   { el: '.cta',        st: { x: 1.35, y: -0.05, ry: -0.85, rx: 0.10, rz: 0.04, camZ: 9.8, s: 0.95, explode: 0.2 }, at: 0.4 },
 ];
+if (IS_SMALL) stages[0].st = { x: 0.9, y: -0.2, ry: -0.5, rx: 0.1, rz: 0.05, camZ: 8.6, s: 0.85, explode: 0 };
+const modelEl = document.querySelector('.hero-model');
+const sideItems = [...document.querySelectorAll('.stack-side li')];
 let anchors = [];
 function measure() {
   const y = window.scrollY;
@@ -256,8 +259,8 @@ engine.onTick((dt, t) => {
 
   if (shoe) bands.forEach((bg, i) => {
     const off = i - 1.5;
-    bg.position.y = off * 1.02 * explodeCur + Math.sin(t * 1.25 + i * 1.7) * 0.035 * explodeCur;
-    bg.position.x = off * 0.16 * explodeCur;
+    bg.position.y = off * 0.8 * explodeCur + Math.sin(t * 1.25 + i * 1.7) * 0.035 * explodeCur;
+    bg.position.x = off * 0.13 * explodeCur;
     bg.rotation.y = off * 0.18 * explodeCur;
     bg.rotation.z = off * 0.05 * explodeCur;
   });
@@ -274,6 +277,15 @@ engine.onTick((dt, t) => {
     const w = windows[li.dataset.k];
     li.classList.toggle('on', w ? win(pExp, w[1], w[2]) > 0.4 : false);
   });
+  for (const li of sideItems) {
+    const w = windows[li.dataset.side];
+    li.classList.toggle('on', w ? win(pExp, w[1], w[2]) > 0.4 : false);
+  }
+  if (modelEl) {
+    const mf = 1 - ss(scrollY, innerHeight * 0.12, innerHeight * 0.8);
+    modelEl.style.opacity = mf.toFixed(3);
+    modelEl.style.visibility = mf <= 0.01 ? 'hidden' : 'visible';
+  }
 });
 
 engine.start();

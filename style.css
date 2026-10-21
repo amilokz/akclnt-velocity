@@ -523,3 +523,18 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
 .vel-gallery-grid figcaption { margin-top:14px; color:var(--ink-3); font-size:9.5px; }
 .vel-gallery-cta { margin-top:54px; text-align:center; }
 @media (max-width:900px){ .vel-gallery-grid{grid-template-columns:1fr;} .vel-gallery-grid img{aspect-ratio:16/11;} .countdown b{font-size:32px;} }
+
+/* ─── Hero model photo (fixed, under the canvas; fades out on scroll) ─── */
+.hero-model { position: fixed; top: 0; right: 3vw; height: 100vh; z-index: -1; margin: 0; pointer-events: none; }
+.hero-model img { height: 100%; width: auto; display: block;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 12%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, black 12%, black 90%, transparent 100%); }
+/* ─── Exploded chapter dressing: ghost type + layer index ─── */
+.ghost { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; pointer-events: none;
+  font: 700 25vw/1 var(--serif); letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 1.5px rgba(18, 21, 28, .08); }
+.stack-side { position: absolute; right: var(--pad); top: 50%; transform: translateY(-50%); display: grid; gap: 16px; list-style: none; margin: 0; padding: 0; }
+.stack-side li { display: flex; align-items: baseline; gap: 12px; font-size: 10px; letter-spacing: .22em; color: var(--ink-3); transition: color .4s; }
+.stack-side li b { font: 600 20px/1 var(--serif); color: var(--ink-3); transition: color .4s; }
+.stack-side li.on { color: var(--ink); }
+.stack-side li.on b { color: var(--rose-deep); }
+@media (max-width: 900px) { .hero-model { display: none; } .stack-side { display: none; } .ghost { font-size: 44vw; } }
