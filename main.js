@@ -116,7 +116,7 @@ const lerp = (a, b, t) => a + (b - a) * t;
 
 const stages = [
   { el: '.hero',       st: { x: 1.72, y: -0.35, ry: -0.50, rx: 0.15, rz: 0.06, camZ: 8.6, s: 0.3, explode: 0 } },
-  { el: '.exploded',   st: { x: 0.1, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 9.6, s: 1.02, explode: 1 }, at: 0.45 },
+  { el: '.exploded',   st: { x: 0, y: 0.05, ry: -0.20, rx: 0.05, rz: 0, camZ: 9.6, s: 1.02, explode: 1 }, at: 0.45 },
   { el: '.tech',       st: { x: 1.8, y: 0, ry: 0.75, rx: 0.08, rz: 0, camZ: 9.2, s: 0.95, explode: 0.55 }, at: 0.3 },
   { el: '.colourways', st: { x: 0, y: -0.1, ry: -0.30, rx: 0.04, rz: 0, camZ: 8.2, s: 1.05, explode: 0 }, at: 0.35 },
   { el: '.lab',        st: { x: 1.7, y: 0, ry: 0.50, rx: 0.10, rz: 0, camZ: 9.6, s: 0.9, explode: 0.12 }, at: 0.4 },
@@ -282,7 +282,7 @@ engine.onTick((dt, t) => {
     li.classList.toggle('on', w ? win(pExp, w[1], w[2]) > 0.4 : false);
   }
   if (modelEl) {
-    const mf = 1 - ss(scrollY, innerHeight * 0.12, innerHeight * 0.8);
+    const mf = 1 - ss(scrollY, innerHeight * 0.05, innerHeight * 0.6);
     modelEl.style.opacity = mf.toFixed(3);
     modelEl.style.visibility = mf <= 0.01 ? 'hidden' : 'visible';
   }
