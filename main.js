@@ -126,7 +126,24 @@ const stages = [
 if (IS_SMALL) stages[0].st = { x: 0.9, y: -0.2, ry: -0.5, rx: 0.1, rz: 0.05, camZ: 8.6, s: 0.85, explode: 0 };
 const modelEl = document.querySelector('.hero-model');
 const filmEl = document.querySelector('.hero-film');
-if (filmEl) filmEl.addEventListener('loadedmetadata', () => { filmEl.pause(); try { filmEl.currentTime = 0.01; } catch {} });
+const FRAMES = 80, frameImgs = [];
+let lastFrame = -1;
+if (filmEl && !IS_SMALL) {
+  for (let i = 1; i <= FRAMES; i++) { const im = new Image(); im.src = `/video/frames/f${String(i).padStart(3, '0')}.webp`; frameImgs.push(im); }
+  const sizeFilm = () => { const d = Math.min(devicePixelRatio || 1, 1.5); filmEl.width = Math.max(2, Math.round(filmEl.clientWidth * d)); filmEl.height = Math.max(2, Math.round(filmEl.clientHeight * d)); lastFrame = -1; };
+  sizeFilm();
+  addEventListener('resize', sizeFilm);
+}
+function drawFilm(p) {
+  const idx = Math.min(FRAMES - 1, Math.max(0, Math.round(p * (FRAMES - 1))));
+  if (idx === lastFrame) return;
+  const im = frameImgs[idx];
+  if (!im || !im.complete || !im.naturalWidth) return;
+  lastFrame = idx;
+  const ctx = filmEl.getContext('2d'), cw = filmEl.width, ch = filmEl.height;
+  const s = Math.max(cw / im.naturalWidth, ch / im.naturalHeight), w = im.naturalWidth * s, h = im.naturalHeight * s;
+  ctx.drawImage(im, (cw - w) / 2, (ch - h) / 2, w, h);
+}
 const sideItems = [...document.querySelectorAll('.stack-side li')];
 let anchors = [];
 function measure() {
@@ -290,11 +307,7 @@ engine.onTick((dt, t) => {
     modelEl.style.opacity = mf.toFixed(3);
     modelEl.style.visibility = mf <= 0.01 ? 'hidden' : 'visible';
   }
-  if (filmEl && !IS_SMALL && scrollY < innerHeight * 0.7 && filmEl.readyState >= 1) {
-    const dur = filmEl.duration || 10;
-    const ft = Math.min(1, scrollY / (innerHeight * 0.6)) * (dur - 0.05);
-    if (Math.abs(filmEl.currentTime - ft) > 0.045) { try { filmEl.currentTime = ft; } catch {} }
-  }
+  if (filmEl && !IS_SMALL) drawFilm(Math.min(1, scrollY / (innerHeight * 0.6)));
 });
 
 engine.start();

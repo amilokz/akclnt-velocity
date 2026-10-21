@@ -526,7 +526,7 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
 
 /* ─── Hero model photo (fixed, under the canvas; fades out on scroll) ─── */
 .hero-model { position: fixed; top: 56px; right: 0; height: calc(100vh - 56px); width: min(58vw, 1180px); z-index: 1; margin: 0; pointer-events: none; }
-.hero-film { width: 100%; height: 100%; object-fit: cover; display: block; background: #0A0A0C;
+.hero-film { width: 100%; height: 100%; display: block; background: #0A0A0C url('/video/hero-poster.webp') center / cover no-repeat;
   -webkit-mask-image: linear-gradient(to right, transparent 0, black 16%);
   mask-image: linear-gradient(to right, transparent 0, black 16%); }
 /* ─── Exploded chapter dressing: ghost type + layer index ─── */
