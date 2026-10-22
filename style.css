@@ -104,11 +104,11 @@ main a, main button, .nav, .reserve, .foot { pointer-events: auto; }
 .tech { height: 340vh; position: relative; }
 .colourways { height: 260vh; position: relative; }
 .lab { height: 200vh; position: relative; }
-.stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 [data-k] { --v: 0; }
 .step, .tech-card, .tech-head, .cw-head, .cw-options, .cw-head2, .lab-inner, .cta-inner { opacity: var(--v); transform: translate3d(0, calc((1 - var(--v)) * 22px), 0); visibility: hidden; }
 .is-v { visibility: visible; }
-.step { position: absolute; left: var(--pad); top: 50%; margin-top: -200px; width: min(430px, 33vw); }
+.step { position: absolute; left: var(--pad); top: 50%; translate: 0 -50%; width: min(430px, 33vw); max-height: calc(100vh - 160px); max-height: calc(100svh - 160px); overflow-y: auto; }
 .fig { color: var(--rose-deep); margin-bottom: 20px; display: flex; align-items: center; gap: 14px; }
 .fig::before { content: ''; width: 28px; height: 1px; background: var(--rose); }
 h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022em; color: var(--navy); margin-bottom: 22px; }
@@ -125,9 +125,9 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
 .stage h2, .stage p, .cta h2, .cta p { text-shadow: 0 0 16px rgba(6, 13, 31, .92), 0 0 3px rgba(6, 13, 31, .8); }
 
 /* finishing */
-.tech-head { position: absolute; left: var(--pad); top: 13vh; width: min(560px, 42vw); padding: 26px 30px 6px; background: rgba(255, 255, 255, .85); backdrop-filter: blur(14px) saturate(1.1);
+.tech-head { position: absolute; left: var(--pad); top: 13vh; width: min(560px, 42vw); max-height: calc(100vh - 140px); max-height: calc(100svh - 140px); overflow-y: auto; padding: 26px 30px 6px; background: rgba(255, 255, 255, .85); backdrop-filter: blur(14px) saturate(1.1);
   box-shadow: inset 0 0 0 1px rgba(230,198,106,.18), 0 30px 70px -40px rgba(0,0,0,.6); }
-.tech-card { position: absolute; left: var(--pad); bottom: 11vh; width: min(420px, 34vw); padding: 28px 30px 30px; background: rgba(255, 255, 255, .85); backdrop-filter: blur(14px) saturate(1.1);
+.tech-card { position: absolute; left: var(--pad); bottom: 11vh; width: min(420px, 34vw); max-height: calc(100vh - 150px); max-height: calc(100svh - 150px); overflow-y: auto; padding: 28px 30px 30px; background: rgba(255, 255, 255, .85); backdrop-filter: blur(14px) saturate(1.1);
   box-shadow: inset 0 0 0 1px rgba(230,198,106,.18), 0 30px 70px -40px rgba(0,0,0,.6); }
 .tech-card h3 { font: 400 34px/1 var(--serif); color: var(--navy); margin: 16px 0 12px; }
 .tech-card p { color: var(--ink-2); font-size: 18px; }
@@ -136,7 +136,8 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
 .tech-n span { color: var(--ink-3); font-size: 9px; }
 
 /* collection */
-.cw-head { position: absolute; left: 50%; bottom: 8vh; width: min(760px, 86vw); margin-left: calc(min(760px, 86vw) / -2); text-align: center; }
+.cw-head { position: absolute; left: 50%; bottom: 8vh; width: min(760px, 86vw); margin-left: calc(min(760px, 86vw) / -2); text-align: center; max-height: calc(100vh - 150px); max-height: calc(100svh - 150px); overflow-y: auto; }
+.cw-options { max-height: calc(100vh - 150px); max-height: calc(100svh - 150px); overflow-y: auto; }
 .cw-head h2 { margin-bottom: 16px; }
 .cw-head .fig { justify-content: center; }
 .cw-head .fig::after { content: ''; width: 28px; height: 1px; background: var(--rose); }
@@ -152,7 +153,7 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
 .price { margin-top: 12px; font: 500 11px/1 var(--sans); letter-spacing: .22em; color: var(--rose-deep); }
 
 /* atelier */
-.lab-inner { position: absolute; left: var(--pad); top: 50%; transform: translate3d(0, calc(-50% + (1 - var(--v)) * 22px), 0); width: min(520px, 40vw); }
+.lab-inner { position: absolute; left: var(--pad); top: 50%; transform: translate3d(0, calc(-50% + (1 - var(--v)) * 22px), 0); width: min(520px, 40vw); max-height: calc(100vh - 160px); max-height: calc(100svh - 160px); overflow-y: auto; }
 .lab-inner > p:not(.fig):not(.bench) { color: var(--ink-2); font-size: clamp(17px, 1.3vw, 20px); }
 .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px 30px; margin: 34px 0 28px; padding-top: 26px; border-top: 1px solid var(--line); }
 .stats dt { font: 300 58px/1 var(--serif); color: var(--navy); letter-spacing: -.02em; }
@@ -237,16 +238,16 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
   .hero-spec { display: none; }
   .hero-cta { gap: 22px; } .hero-cta .btn-text { display: none; }
   .hint { display: none; }
-  .step, .tech-card, .lab-inner { left: 18px; right: 18px; width: auto; top: auto; bottom: 70px; margin-top: 0; }
+  .step, .tech-card, .lab-inner { left: 18px; right: 18px; width: auto; top: auto; bottom: 70px; margin-top: 0; translate: 0 0; max-height: calc(100vh - 150px); max-height: calc(100svh - 150px); overflow-y: auto; }
   .step { padding: 22px 20px; background: rgba(255, 255, 255, .88); backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px var(--line); }
   .step h2, .lab-inner h2 { font-size: 32px; margin-bottom: 12px; }
   .step p:not(.fig):not(.step-hint) { font-size: 16px; line-height: 1.4; }
   .step .spec { display: none; }
   .tech-card { padding: 20px; bottom: 70px; } .tech-card h3 { font-size: 28px; } .tech-card p { font-size: 16px; }
-  .tech-head { top: 11vh; left: 18px; right: 18px; width: auto; } .tech-head h2 { font-size: 34px; }
+  .tech-head { top: max(11vh, 84px); left: 18px; right: 18px; width: auto; } .tech-head h2 { font-size: 34px; }
   .rail { display: none; }
-  .cw-head { bottom: 76px; } .cw-head h2 { font-size: 32px; } .cw-head p:not(.fig) { font-size: 16px; }
-  .cw-options { grid-template-columns: 1fr; gap: 10px; bottom: 76px; }
+  .cw-head { bottom: 76px; max-height: calc(100vh - 176px); max-height: calc(100svh - 176px); } .cw-head h2 { font-size: 32px; } .cw-head p:not(.fig) { font-size: 16px; }
+  .cw-options { grid-template-columns: 1fr; gap: 10px; bottom: 76px; max-height: calc(100vh - 176px); max-height: calc(100svh - 176px); }
   .cw-head2 { top: 10vh; } .cw-head2 h2 { font-size: 34px; }
   .cw-option { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 12px; text-align: left; padding-top: 10px; }
   .cw-option h3 { font-size: 26px; margin: 0; order: -1; } .cw-option p:not(.caps):not(.price) { display: none; } .price { margin: 0; }
